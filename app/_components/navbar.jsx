@@ -10,7 +10,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { FaBars } from "react-icons/fa6";
 import { BsThreeDots } from "react-icons/bs";
 import { PiShootingStarThin } from "react-icons/pi";
-const navbar = () => {
+const Navbar = () => {
     const [dots,setDots]=useState(false);
     const [activeIndex,setActiveIndex]=useState(2);
     
@@ -111,4 +111,4 @@ const navbar = () => {
   )
 }
 
-export default navbar
+export default Navbar

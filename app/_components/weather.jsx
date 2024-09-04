@@ -89,7 +89,7 @@ const Weather_ForeCast = () => {
     e.preventDefault();
     Handle_Fetch_Weather();
   };
-  console.log(weather);
+  console.log(weather)
 
   return (
     <main
@@ -116,7 +116,7 @@ const Weather_ForeCast = () => {
 
             <div className="flex items-center gap-4 py-2 px-3 rounded-2xl bg-white">
               <h1 className="text-sm text-gray-700">{city}</h1>
-              <Image src={cloudy} width={20} height={20} />
+              <Image src={cloudy} width={20} height={20} alt="weather clouds image" />
               <div className="relative text-sm">
                 <span>
                   {weather && (weather.current.temp - 273.15).toFixed(2)}
@@ -150,7 +150,7 @@ const Weather_ForeCast = () => {
             {weather && weather.timezone}
             <IoIosArrowDown />
             <div className=" bg-black rounded-full">
-              <Image src={SemiHome} width={30} height={30} className="p-1" />
+              <Image src={SemiHome} width={30} height={30} alt="current home" className="p-1" />
             </div>
           </div>
 
@@ -179,7 +179,7 @@ const Weather_ForeCast = () => {
                   src={entryDevice}
                   width={222}
                   height={222}
-                  className=""
+                  alt="gif entry mobile device "
                 />
               </div>
               <div className="flex flex-col items-center">
@@ -188,7 +188,7 @@ const Weather_ForeCast = () => {
                   Enjoy real-time, hyperlocal and the most accurate forecast on
                   mobile
                 </p>
-                <Image src="/qr.png" width={190} height={190} />
+                <Image src="/qr.png" width={190} height={190} alt="qr Code" />
               </div>
               <div className="absolute top-4 right-4">
                 <IoClose
@@ -202,8 +202,8 @@ const Weather_ForeCast = () => {
           </div>
         </div>
         <div className='grid grid-cols-2 pt-10 '> 
-      <div className='rounded-2xl border border-gray-400'>
-       <div className="flex justify-between py-3 px-6">
+      <div className='px-5 py-3 rounded-2xl border border-gray-400'>
+       <div className="flex justify-between py-3 ">
         <div>
             <h1 className='font-bold text-sm'>Current Weather</h1>
             <p className='text-sm'>6:48 PM</p>
@@ -214,20 +214,43 @@ const Weather_ForeCast = () => {
             <span>Seeing Differnt weather?</span>
         </div>
        </div>
-       <div className="flex">
+       <div className="flex gap-5">
+        <div className="flex gap-2">
         <Image src="/cloudy.svg"
         width={72}
-        height={72}/>
-        <div>
-        <div className="relative text-sm">
-                <span className="text-7xl">
+        height={72}
+        alt="clouds with current weather"
+        />
+        <div className="relative  text-7xl">
                   {weather && (weather.current.temp - 273.15).toFixed(0)}
-                </span>
-                <div className="absolute -top-0  ">
+                <div className="absolute -top-5 right-0 ">
                   <p className="text-3xl">∘</p>
                 </div>
               </div>
         </div>
+        <div className="text-lg font-bold">
+          <h1>Smoke</h1>
+          <div className="flex gap-5">
+          <div className="font-medium">
+          <p>Feels Like</p>
+          </div>
+          <div className="relative">
+          <p>88</p>
+          <div className="absolute -top-3 left-5 ">
+                  <p className="text-lg font-medium">∘</p>
+                </div>
+          </div> 
+          </div>
+        </div>
+       </div>
+
+       <div>
+        <p className="text-lg font-normal py-5">The skies will be mostly clear. The low will be 77°.</p>
+       {/* {weather.current.map((x,i)=>{
+        return(<div>
+          {x}
+        </div>)
+       })} */}
        </div>
       </div>
       <div></div>
