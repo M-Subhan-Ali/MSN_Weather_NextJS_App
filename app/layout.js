@@ -4,7 +4,7 @@ import Navbar from "@/app/_components/navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Weather App",
+  title: "MSN Weather App",
   description: "By Windows Microsoft",
 };
 

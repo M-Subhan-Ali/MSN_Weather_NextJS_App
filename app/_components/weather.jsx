@@ -12,7 +12,9 @@ import { CiMobile3 } from "react-icons/ci";
 import entryDevice from "@/public/entry-device.gif";
 import { IoClose } from "react-icons/io5";
 import { FaMessage } from "react-icons/fa6";
-
+import { CiCircleInfo } from "react-icons/ci";
+import { IoMdArrowDropleft } from "react-icons/io";
+import { FaArrowDown } from "react-icons/fa";
 
 const Weather_ForeCast = () => {
   const [city, setCity] = useState("");
@@ -20,6 +22,63 @@ const Weather_ForeCast = () => {
   const [error, setError] = useState(null);
   const [activeIndex, setActiveIndex] = useState(false);
   const [activeindexclose, setActiveIndexClose] = useState(false);
+  const currentTime = weather?.current?.dt;
+  const sunriseTime = weather?.current?.sunrise;
+  const sunsetTime = weather?.current?.sunset;
+
+  const isDayTime = currentTime >= sunriseTime && currentTime <= sunsetTime;
+
+  const today = new Date();
+  const day1 = new Date(today);
+  const day2 = new Date(today);
+  const day3 = new Date(today);
+  const day4 = new Date(today);
+  const day5 = new Date(today);
+
+  day2.setDate(today.getDate() + 1);
+  day3.setDate(today.getDate() + 2);
+  day4.setDate(today.getDate() + 3);
+  day5.setDate(today.getDate() + 4);
+
+  const information = [
+    "Air quality",
+    "Wind",
+    "Humidity",
+    "Visibility",
+    "Pressure",
+    "Dew point",
+  ];
+  const details_information = [
+    {
+      info: weather?.current?.clouds ?? "no data available",
+    },
+    {
+      info:
+        weather?.current?.wind_speed !== undefined &&
+        weather.current.wind_speed !== null
+          ? Math.ceil(weather.current.wind_speed) + " mph"
+          : "no data available",
+    },
+    {
+      info: weather?.current?.humidity + "%" ?? "no data available",
+    },
+    {
+      info: weather?.current?.visibility
+        ? (weather.current.visibility * 0.00062137).toFixed(1) + " mi"
+        : "no data available",
+    },
+    {
+      info: weather?.current?.pressure
+        ? (weather.current.pressure / 33.864).toFixed(2) + " in"
+        : "no data available",
+    },
+    {
+      info: weather?.current?.dew_point
+        ? weather.current.dew_point.toFixed(0) + "°"
+        : "no data available",
+    },
+  ];
+
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY_PRIVATE;
   const GEO_BASE_URL = "https://api.openweathermap.org/geo/1.0/direct";
   const WEATHER_BASE_URL = "https://api.openweathermap.org/data/3.0/onecall";
@@ -89,34 +148,62 @@ const Weather_ForeCast = () => {
     e.preventDefault();
     Handle_Fetch_Weather();
   };
-  console.log(weather)
+  console.log(weather);
 
   return (
     <main
-      className="bg-gradient-to-b from-[#C4DCFF] via-[rgba(167,213,255,0.4)] to-transparent
-    h-[100vh]"
+      className={`${
+        isDayTime
+          ? "bg-gradient-to-b from-[#C4DCFF] via-[rgba(167,213,255,0.1)] to-transparent"
+          : "bg-custom-gradient h-screen flex items-center justify-center"
+      } h-full `}
     >
       <div className="container sub-main mx-auto ">
         <div className="h-[72px] flex py-4">
           <div className="flex gap-4 ">
             <form onSubmit={Handler_Submit}>
-              <div className="flex items-center px-2 bg-white rounded-xl">
+              <div
+                className={`${
+                  isDayTime
+                    ? " bg-white "
+                    : " text-white backdrop-blur-3xl border border-gray-500 hover:border-gray-300"
+                } flex items-center px-2 rounded-xl`}
+              >
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="Search For Location"
-                  className="outline-none py-2 px-3 rounded-xl text-gray-800"
+                  className={`${
+                    isDayTime ? "text-gray-800" : "bg-transparent"
+                  } outline-none py-2 px-3 rounded-xl`}
                 />
                 <button type="submit">
-                  <IoIosSearch className="text-2xl text-gray-500 font-medium cursor-pointer" />
+                  <IoIosSearch
+                    className={`${
+                      isDayTime
+                        ? "text-2xl text-gray-500 font-medium cursor-pointer"
+                        : "text-white"
+                    }`}
+                  />
                 </button>
               </div>
             </form>
 
-            <div className="flex items-center gap-4 py-2 px-3 rounded-2xl bg-white">
-              <h1 className="text-sm text-gray-700">{city}</h1>
-              <Image src={cloudy} width={20} height={20} alt="weather clouds image" />
+            <div
+              className={`flex items-center gap-4 py-2 px-3 rounded-2xl ${
+                isDayTime
+                  ? " bg-white"
+                  : "text-white backdrop-blur-3xl border border-gray-500 hover:border-gray-300 "
+              } `}
+            >
+              <h1 className="text-sm ">{city}</h1>
+              <Image
+                src={cloudy}
+                width={20}
+                height={20}
+                alt="weather clouds image"
+              />
               <div className="relative text-sm">
                 <span>
                   {weather && (weather.current.temp - 273.15).toFixed(2)}
@@ -131,9 +218,9 @@ const Weather_ForeCast = () => {
                   className="rotate-90 cursor-pointer"
                 />
                 <div
-                  className={`${
-                    activeIndex ? "block" : "none"
-                  } absolute -left-[1170%] -bottom-14 flex items-center justify-center bg-white py-2 px-3 
+                  className={`${activeIndex ? "block" : "none"} ${
+                    isDayTime ? "bg-white " : "bg-gray-700"
+                  }  absolute -left-[1170%] -bottom-14 flex items-center justify-center  py-2 px-3 
     text-base w-[200px] rounded-lg`}
                 >
                   <MdOutlineDeleteOutline className="text-2xl cursor-pointer" />
@@ -149,8 +236,16 @@ const Weather_ForeCast = () => {
           <div className="flex items-center gap-3">
             {weather && weather.timezone}
             <IoIosArrowDown />
-            <div className=" bg-black rounded-full">
-              <Image src={SemiHome} width={30} height={30} alt="current home" className="p-1" />
+            <div
+              className={`${isDayTime ? " bg-black rounded-full" : "bg-white"}`}
+            >
+              <Image
+                src={SemiHome}
+                width={30}
+                height={30}
+                alt="current home"
+                className="p-1"
+              />
             </div>
           </div>
 
@@ -171,7 +266,7 @@ const Weather_ForeCast = () => {
             <div
               className={`${
                 activeindexclose ? "block" : "none"
-              } absolute -left-[140%] -bottom-[1050%] py-5 px-5 flex items-center
+              } absolute z-50 -left-[140%] -bottom-[1050%] py-5 px-5 flex items-center
                      bg-white `}
             >
               <div>
@@ -201,60 +296,382 @@ const Weather_ForeCast = () => {
             </div>
           </div>
         </div>
-        <div className='grid grid-cols-2 pt-10 '> 
-      <div className='px-5 py-3 rounded-2xl border border-gray-400'>
-       <div className="flex justify-between py-3 ">
-        <div>
-            <h1 className='font-bold text-sm'>Current Weather</h1>
-            <p className='text-sm'>6:48 PM</p>
-        </div>
-        <div className='flex items-center gap-3 py-2 px-3 rounded-s-full rounded-e-full
-         bg-gray-300  text-blue-400 text-sm'>
-            <FaMessage/> 
-            <span>Seeing Differnt weather?</span>
-        </div>
-       </div>
-       <div className="flex gap-5">
-        <div className="flex gap-2">
-        <Image src="/cloudy.svg"
-        width={72}
-        height={72}
-        alt="clouds with current weather"
-        />
-        <div className="relative  text-7xl">
-                  {weather && (weather.current.temp - 273.15).toFixed(0)}
-                <div className="absolute -top-5 right-0 ">
-                  <p className="text-3xl">∘</p>
+        <div className="grid grid-cols-2 gap-10 pt-10 ">
+          <div className="px-5 py-3 rounded-2xl bg-white">
+            <div className="flex justify-between py-3 ">
+              <div>
+                <h1 className="font-bold text-sm">Current Weather</h1>
+                <p className="text-sm">6:48 PM</p>
+              </div>
+              <div
+                className="flex items-center gap-3 py-2 px-3 rounded-s-full rounded-e-full
+         bg-gray-300  text-blue-400 text-sm"
+              >
+                <FaMessage />
+                <span>Seeing Differnt weather?</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-12">
+              <div className="flex gap-2">
+                <Image
+                  src={isDayTime ? "/mostlyclear.svg" : "/night.svg"}
+                  width={72}
+                  height={72}
+                  alt="clouds with current weather"
+                />
+                <div className="relative  text-7xl">
+                  {weather &&
+                    (((weather.current.temp - 273.15) * 9) / 5 + 32).toFixed(0)}
+                  <div className="absolute -top-2 -right-3 ">
+                    <p className="text-3xl">∘</p>
+                  </div>
+                  <div className="absolute top-1 -right-8 ">
+                    <p className="text-4xl">F</p>
+                  </div>
                 </div>
               </div>
-        </div>
-        <div className="text-lg font-bold">
-          <h1>Smoke</h1>
-          <div className="flex gap-5">
-          <div className="font-medium">
-          <p>Feels Like</p>
-          </div>
-          <div className="relative">
-          <p>88</p>
-          <div className="absolute -top-3 left-5 ">
-                  <p className="text-lg font-medium">∘</p>
+              <div className="text-lg font-bold">
+                <h1>Smoke</h1>
+                <div className="flex gap-5">
+                  <div className="font-medium">
+                    <p>Feels Like</p>
+                  </div>
+                  <div className="relative">
+                    <p>88</p>
+                    <div className="absolute -top-3 left-5 ">
+                      <p className="text-lg font-medium">∘</p>
+                    </div>
+                  </div>
                 </div>
-          </div> 
+              </div>
+            </div>
+
+            <div>
+              <p className="text-lg font-normal py-5">
+                The skies will be mostly clear.{" "}
+                {weather && weather.current.weather[0].description}{" "}
+                {weather && weather.current.temp.toFixed(0)}° on this day.
+              </p>
+            </div>
+            <div className="grid grid-cols-6">
+              {information.map((x, index) => {
+                return (
+                  <div key={index}>
+                    <div className="flex items-center gap-1">
+                      <h1 className="text-sm hover:underline cursor-pointer ">
+                        {x}
+                      </h1>
+                      <div>
+                        <CiCircleInfo />
+                      </div>
+                    </div>
+                    <div>
+                      {details_information[index]?.info ? (
+                        <div className="flex items-center gap-1">
+                          {index === 0 && (
+                            <div>
+                              <Image
+                                src="/fullsun.svg"
+                                width={10}
+                                height={10}
+                                alt="fullsun_image"
+                              />
+                            </div>
+                          )}
+                          {details_information[index].info}
+                          {index === 1 && (
+                            <div>
+                              <IoMdArrowDropleft />
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        "no data available"
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d64851140.25901139!2d-61.87783357081126!3d7.218073109762744!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46ed8886cfadda85%3A0x72ef99e6b3fcf079!2sEurope!5e0!3m2!1sen!2s!4v1725534144894!5m2!1sen!2s"
+                style={{
+                  position: "",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
+                }}
+                className="rounded-2xl"
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+            <div>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d57173176.00670384!2d99.99999999999999!3d29!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3663f18a24cbe857%3A0xa9416bfcd3a0f459!2sAsia!5e0!3m2!1sen!2s!4v1725534256722!5m2!1sen!2s"
+                style={{ width: "100%", height: "100%" }}
+                className="rounded-2xl invert"
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
           </div>
         </div>
-       </div>
-
-       <div>
-        <p className="text-lg font-normal py-5">The skies will be mostly clear. The low will be 77°.</p>
-       {/* {weather.current.map((x,i)=>{
-        return(<div>
-          {x}
-        </div>)
-       })} */}
-       </div>
-      </div>
-      <div></div>
-    </div>
+        <div
+          className="flex justify-between items-center w-[75%] text-base font-semibold
+        py-8"
+        >
+          <div>
+            <h1>4 Days Forecast</h1>
+          </div>
+          <div className="flex items-center gap-1 text-gray-600">
+            <h1>see Monthly</h1>
+            <FaArrowDown />
+          </div>
+        </div>
+        <div className="w-[75%]">
+          <div className="flex gap-3">
+            <div className="w-[320px] bg-white">
+              <div className="grid grid-cols-2 justify-between items-center py-2 px-3 rounded-2xl">
+                <div className="text-base font-semibold">
+                  <div>
+                    <h1>{isDayTime ? "Today" : "Tonight"}</h1>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <Image
+                        src={isDayTime ? "/mostlyclear.svg" : "/cloudy.svg"}
+                        height={40}
+                        width={40}
+                        alt="weather "
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <div>
+                        <h1>
+                          {" "}
+                          {weather &&
+                            (
+                              ((weather.current.temp - 273.15) * 9) / 5 +
+                              32
+                            ).toFixed(0)}
+                          °
+                        </h1>
+                      </div>
+                      <div>
+                        <h1 className="font-medium">
+                          {weather &&
+                            (
+                              ((weather.current.dew_point - 273.15) * 9) / 5 +
+                              32
+                            ).toFixed(0)}{" "}
+                          °
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="font-light grid gap-2">
+                  <h1>Mostly sunny</h1>
+                  <h1>21%</h1>
+                </div>
+              </div>
+            </div>
+            <div className="w-full grid grid-cols-4 gap-3 ">
+              <div
+                className="grid justify-center items-center bg-white 
+            px-3 py-1 rounded-2xl"
+              >
+                <div className="text-xs">
+                  <h1>
+                    {day2.toLocaleDateString("en-US", { weekday: "short" })}{" "}
+                    {day2.getDate()}
+                  </h1>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div>
+                    <Image
+                      src="/mostlyclear.svg"
+                      height={40}
+                      width={40}
+                      alt="weather "
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div>
+                      <h1>
+                        {" "}
+                        {weather &&
+                          (
+                            ((weather.current.temp - 273.15) * 9) / 5 +
+                            32 +
+                            1
+                          ).toFixed(0)}
+                        °
+                      </h1>
+                    </div>
+                    <div>
+                      <h1 className="font-medium">
+                        {weather &&
+                          (
+                            ((weather.current.dew_point - 273.15) * 9) / 5 +
+                            32 +
+                            1
+                          ).toFixed(0)}{" "}
+                        °
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="grid justify-center items-center bg-white 
+            px-3 py-1 rounded-2xl"
+              >
+                <div className="text-xs">
+                  <h1>
+                    {day3.toLocaleDateString("en-US", { weekday: "short" })}{" "}
+                    {day3.getDate()}
+                  </h1>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div>
+                    <Image
+                      src="/mostlyclear.svg"
+                      height={40}
+                      width={40}
+                      alt="weather "
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div>
+                      <h1>
+                        {" "}
+                        {weather &&
+                          (
+                            ((weather.current.temp - 273.15) * 9) / 5 +
+                            32 +
+                            2
+                          ).toFixed(0)}
+                        °
+                      </h1>
+                    </div>
+                    <div>
+                      <h1 className="font-medium">
+                        {weather &&
+                          (
+                            ((weather.current.dew_point - 273.15) * 9) / 5 +
+                            32 +
+                            2
+                          ).toFixed(0)}{" "}
+                        °
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="grid justify-center items-center bg-white 
+            px-3 py-1 rounded-2xl"
+              >
+                <div className="text-xs">
+                  <h1>
+                    {day4.toLocaleDateString("en-US", { weekday: "short" })}{" "}
+                    {day4.getDate()}
+                  </h1>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div>
+                    <Image
+                      src="/mostlyclear.svg"
+                      height={40}
+                      width={40}
+                      alt="weather "
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div>
+                      <h1>
+                        {" "}
+                        {weather &&
+                          (
+                            ((weather.current.temp - 273.15) * 9) / 5 +
+                            32 +
+                            3
+                          ).toFixed(0)}
+                        °
+                      </h1>
+                    </div>
+                    <div>
+                      <h1 className="font-medium">
+                        {weather &&
+                          (
+                            ((weather.current.dew_point - 273.15) * 9) / 5 +
+                            32 +
+                            3
+                          ).toFixed(0)}{" "}
+                        °
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="grid justify-center items-center bg-white 
+            px-3 py-1 rounded-2xl"
+              >
+                <div className="text-xs">
+                  <h1>
+                    {day5.toLocaleDateString("en-US", { weekday: "short" })}{" "}
+                    {day5.getDate()}
+                  </h1>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div>
+                    <Image
+                      src="/mostlyclear.svg"
+                      height={40}
+                      width={40}
+                      alt="weather "
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div>
+                      <h1>
+                        {" "}
+                        {weather &&
+                          (
+                            ((weather.current.temp - 273.15) * 9) / 5 +
+                            32 +
+                            4
+                          ).toFixed(0)}
+                        °
+                      </h1>
+                    </div>
+                    <div>
+                      <h1 className="font-medium">
+                        {weather &&
+                          (
+                            ((weather.current.dew_point - 273.15) * 9) / 5 +
+                            32 +
+                            4
+                          ).toFixed(0)}{" "}
+                        °
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );
