@@ -18,7 +18,7 @@ const Navbar = () => {
   const [dots, setDots] = useState(false);
   const [activeIndex, setActiveIndex] = useState(2);
   const { isDayTime, setIsDayTime } = useContext(ThemeContext);
-
+  const [aside,setAside]=useState(false);
   const Discover = [
     "Discover",
     "Following",
@@ -34,7 +34,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white h-[120px] mx-auto w-full ">
+    <nav className="bg-white h-full lg:h-[120px] mx-auto w-full ">
       <div className="px-2 lg:px-5 md:px-3 xl:px-10 2xl:px-20 mx-auto flex justify-between items-center pt-4 ">
         <div className="flex items-center gap-1">
           <Image src={microsoft} alt="LOGO" width={22} height={22} />
@@ -74,7 +74,7 @@ const Navbar = () => {
             )}
           </div>
           <div>
-            <CiMobile3 className="text-xl  md:text-3xl  cursor-pointer" />
+            <CiMobile3 onClick={()=>setAside((val)=>!val)} className="text-xl  md:text-3xl  cursor-pointer" />
           </div>
           <div>
             <IoNotificationsOutline className="text-xl  md:text-3xl  cursor-pointer" />
@@ -141,6 +141,58 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      <aside className={` ${aside ?   "translate-x-0" : "translate-x-[-100%]"} duration-1000 bg-gray-300 text-gray-700 w-[50vw]  grid lg:hidden items-center justify-between pt-3`}>
+        <div className=" px-5 grid gap-6 ">
+          <div>
+            <FaBars className="text-md cursor-pointer" />
+          </div>
+          {Discover.map((x, i) => {
+            return (
+              <div key={i}>
+                <h1
+                  className={`${
+                    activeIndex === i ? "font-bold" : ""
+                  } text-xs lg:text-sm cursor-pointer`}
+                  onClick={() => setActiveIndex(i)}
+                >
+                  {x}
+                </h1>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex items-center gap-4 ">
+          <div>
+            <div className="relative">
+              <BsThreeDots
+                onClick={() => setDots((value) => !value)}
+                className="cursor-pointer"
+              />
+              <div
+                className={`${dots ? "block" : "none"} ${
+                  isDayTime ? "text-black" : "text-white"
+                } absolute top-5 right-0 shadow-md shadow-gray-500
+                px-3 py-2`}
+              >
+                <ul>
+                  <li>EarthQuakes</li>
+                  <li>Air Quality</li>
+                  <li>3D Maps</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className=" flex items-center  h-full">
+            <div
+              className="flex items-center gap-2 border border-black rounded-s-full rounded-e-full
+                py-2 px-4  "
+            >
+              <PiShootingStarThin className="text-xl" />
+              <h1 className="text-sm">Personalize</h1>
+            </div>
+          </div>
+        </div>
+      </aside>
     </nav>
   );
 };
