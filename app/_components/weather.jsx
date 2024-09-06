@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { ThemeContext } from "../page";   //usecontext provider
 import axios from "axios";
 import Image from "next/image";
 import { IoIosSearch } from "react-icons/io";
@@ -26,7 +27,9 @@ const Weather_ForeCast = () => {
   const sunriseTime = weather?.current?.sunrise;
   const sunsetTime = weather?.current?.sunset;
 
-  const isDayTime = currentTime >= sunriseTime && currentTime <= sunsetTime;
+  const {isDayTime,setIsDayTime}=useContext(ThemeContext);
+  // const isDayTime = false
+  // const isDayTime = currentTime >= sunriseTime && currentTime <= sunsetTime;
 
   const today = new Date();
   const day1 = new Date(today);
@@ -39,6 +42,31 @@ const Weather_ForeCast = () => {
   day3.setDate(today.getDate() + 2);
   day4.setDate(today.getDate() + 3);
   day5.setDate(today.getDate() + 4);
+ 
+  let time_of_API = null;
+  let percentageOfSunlightRemaining = null
+  if(weather && weather.current){
+ time_of_API=weather.current.dt*1000;
+
+ const { sunrise, sunset, dt } = weather.current;
+
+  // Convert to milliseconds
+  const sunriseTime = sunrise * 1000;
+  const sunsetTime = sunset * 1000;
+  const currentTime = dt * 1000;
+
+  // Calculate total daylight duration and elapsed time
+  const totalDaylightDuration = sunsetTime - sunriseTime;
+  const elapsedDaylight = currentTime - sunriseTime;
+
+  // Calculate remaining daylight time
+  const remainingDaylight = totalDaylightDuration - elapsedDaylight;
+
+  // Calculate the percentage of sunlight remaining
+  percentageOfSunlightRemaining = (remainingDaylight / totalDaylightDuration) * 100;
+}
+
+const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US', { timeZone: weather.timezone }) : "Loading...";
 
   const information = [
     "Air quality",
@@ -155,11 +183,11 @@ const Weather_ForeCast = () => {
       className={`${
         isDayTime
           ? "bg-gradient-to-b from-[#C4DCFF] via-[rgba(167,213,255,0.1)] to-transparent"
-          : "bg-custom-gradient h-screen flex items-center justify-center"
-      } h-full `}
+          : "bg-custom-gradient flex items-center justify-center"
+      }  `}
     >
       <div className="container sub-main mx-auto ">
-        <div className="h-[72px] flex py-4">
+        <div className="h-[72px]  py-4 ">
           <div className="flex gap-4 ">
             <form onSubmit={Handler_Submit}>
               <div
@@ -225,7 +253,8 @@ const Weather_ForeCast = () => {
                 >
                   <MdOutlineDeleteOutline className="text-2xl cursor-pointer" />
                   <div>
-                    <h1 className="text-sm">Remove Location</h1>
+                    <h1 onClick={()=>{setWeather(null),setCity(""),setActiveIndex(false)}}
+                     className="text-sm cursor-pointer">Remove Location</h1>
                   </div>
                 </div>
               </div>
@@ -233,11 +262,11 @@ const Weather_ForeCast = () => {
           </div>
         </div>
         <div className="flex items-center justify-between ">
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 ${isDayTime ? "text-black" : "text-white"}`}>
             {weather && weather.timezone}
-            <IoIosArrowDown />
+            <IoIosArrowDown  />
             <div
-              className={`${isDayTime ? " bg-black rounded-full" : "bg-white"}`}
+              className={`${isDayTime ? " bg-black rounded-full" : "bg-gray-600 "} rounded-full`}
             >
               <Image
                 src={SemiHome}
@@ -250,15 +279,16 @@ const Weather_ForeCast = () => {
           </div>
 
           <div
-            className="relative flex items-center gap-2 bg-white 
+            className={`${isDayTime ? "bg-white" : "bg-transparent border  border-gray-500 hover:border-gray-300"}  relative flex items-center gap-2 
             rounded-s-full rounded-e-full
-                py-2 px-4  "
+                py-2 px-4  `}
           >
             <div
               onMouseEnter={() => {
                 setActiveIndexClose((value) => !value);
               }}
-              className="flex gap-3"
+              className={`flex gap-3 ${isDayTime ? "bg-white text-black" :"text-white  bg-transparent  "} `}
+            
             >
               <CiMobile3 className="text-xl" />
               <h1 className="text-sm font-semibold">Live Weather on Mobile</h1>
@@ -297,15 +327,15 @@ const Weather_ForeCast = () => {
           </div>
         </div>
         <div className="grid grid-cols-2 gap-10 pt-10 ">
-          <div className="px-5 py-3 rounded-2xl bg-white">
+          <div className={`px-5 py-3 rounded-2xl ${isDayTime ? "bg-white" : "bg-transparent border  border-gray-500 hover:border-gray-300 text-white "} `}>
             <div className="flex justify-between py-3 ">
               <div>
                 <h1 className="font-bold text-sm">Current Weather</h1>
-                <p className="text-sm">6:48 PM</p>
+                <p className="text-sm">{formattedTime}</p>
               </div>
               <div
-                className="flex items-center gap-3 py-2 px-3 rounded-s-full rounded-e-full
-         bg-gray-300  text-blue-400 text-sm"
+                className={`flex items-center gap-3 py-2 px-3 rounded-s-full rounded-e-full
+          text-blue-400 text-sm ${isDayTime ? "bg-gray-300 " : "bg-transparent border border-gray-300"} cursor-pointer`}
               >
                 <FaMessage />
                 <span>Seeing Differnt weather?</span>
@@ -321,17 +351,17 @@ const Weather_ForeCast = () => {
                 />
                 <div className="relative  text-7xl">
                   {weather &&
-                    (((weather.current.temp - 273.15) * 9) / 5 + 32).toFixed(0)}
+                    (weather.current.temp -  273.15).toFixed(0)}
                   <div className="absolute -top-2 -right-3 ">
                     <p className="text-3xl">∘</p>
                   </div>
                   <div className="absolute top-1 -right-8 ">
-                    <p className="text-4xl">F</p>
+                    <p className="text-4xl">C</p>
                   </div>
                 </div>
               </div>
               <div className="text-lg font-bold">
-                <h1>Smoke</h1>
+                <h1>{weather && weather.current.weather[0].main}</h1>
                 <div className="flex gap-5">
                   <div className="font-medium">
                     <p>Feels Like</p>
@@ -348,7 +378,7 @@ const Weather_ForeCast = () => {
 
             <div>
               <p className="text-lg font-normal py-5">
-                The skies will be mostly clear.{" "}
+                {weather ? "" : "The skies will be mostly clear."}{" "}
                 {weather && weather.current.weather[0].description}{" "}
                 {weather && weather.current.temp.toFixed(0)}° on this day.
               </p>
@@ -425,20 +455,20 @@ const Weather_ForeCast = () => {
           </div>
         </div>
         <div
-          className="flex justify-between items-center w-[75%] text-base font-semibold
-        py-8"
+          className={`flex justify-between items-center w-[75%] text-base font-semibold
+        py-8 ${isDayTime ? "text-black" : "text-white"}`}
         >
           <div>
             <h1>4 Days Forecast</h1>
           </div>
-          <div className="flex items-center gap-1 text-gray-600">
+          <div className={`flex items-center gap-1 ${isDayTime ?  "text-gray-600" : "text-gray-200 border border-gray-300 py-2 px-4 rounded-e-full rounded-s-full"}`}>
             <h1>see Monthly</h1>
             <FaArrowDown />
           </div>
         </div>
         <div className="w-[75%]">
           <div className="flex gap-3">
-            <div className="w-[320px] bg-white">
+            <div className={`w-[320px] ${isDayTime ? "bg-white" : "bg-transparent border border-gray-300 rounded-2xl text-white"}`}>
               <div className="grid grid-cols-2 justify-between items-center py-2 px-3 rounded-2xl">
                 <div className="text-base font-semibold">
                   <div>
@@ -479,15 +509,15 @@ const Weather_ForeCast = () => {
                   </div>
                 </div>
                 <div className="font-light grid gap-2">
-                  <h1>Mostly sunny</h1>
-                  <h1>21%</h1>
+                  <h1>{weather ? weather.current.weather[0].description : "Mostly sunny"}</h1>
+                  <h1>{weather ? (percentageOfSunlightRemaining).toFixed(0) + "%" : "Loading"}</h1>
                 </div>
               </div>
             </div>
             <div className="w-full grid grid-cols-4 gap-3 ">
               <div
-                className="grid justify-center items-center bg-white 
-            px-3 py-1 rounded-2xl"
+                className={`grid justify-center items-center  
+            px-3 py-1 rounded-2xl ${isDayTime ? "bg-white" : "bg-transparent border border-gray-300 rounded-2xl text-white"}`}
               >
                 <div className="text-xs">
                   <h1>
@@ -532,8 +562,8 @@ const Weather_ForeCast = () => {
                 </div>
               </div>
               <div
-                className="grid justify-center items-center bg-white 
-            px-3 py-1 rounded-2xl"
+                className={`grid justify-center items-center  
+            px-3 py-1 rounded-2xl  ${isDayTime ? "bg-white" : "bg-transparent border border-gray-300 rounded-2xl text-white"}`}
               >
                 <div className="text-xs">
                   <h1>
@@ -544,7 +574,7 @@ const Weather_ForeCast = () => {
                 <div className="flex items-center gap-2">
                   <div>
                     <Image
-                      src="/mostlyclear.svg"
+                      src="/cloudy.svg"
                       height={40}
                       width={40}
                       alt="weather "
@@ -578,8 +608,8 @@ const Weather_ForeCast = () => {
                 </div>
               </div>
               <div
-                className="grid justify-center items-center bg-white 
-            px-3 py-1 rounded-2xl"
+                className={`grid justify-center items-center 
+            px-3 py-1 rounded-2xl ${isDayTime ? "bg-white": "bg-transparent border border-gray-300 rounded-2xl text-white"}`}
               >
                 <div className="text-xs">
                   <h1>
@@ -590,7 +620,7 @@ const Weather_ForeCast = () => {
                 <div className="flex items-center gap-2">
                   <div>
                     <Image
-                      src="/mostlyclear.svg"
+                      src="/fullsun.svg"
                       height={40}
                       width={40}
                       alt="weather "
@@ -624,8 +654,8 @@ const Weather_ForeCast = () => {
                 </div>
               </div>
               <div
-                className="grid justify-center items-center bg-white 
-            px-3 py-1 rounded-2xl"
+                className={`grid justify-center items-center  
+            px-3 py-1 rounded-2xl ${isDayTime ? "bg-white" : "bg-transparent border border-gray-300 rounded-2xl text-white"}`}
               >
                 <div className="text-xs">
                   <h1>
