@@ -155,7 +155,7 @@ const Navbar = () => {
       <aside
         className={` ${
           aside ? "translate-x-0" : "translate-x-[-100%] "
-        } duration-1000 bg-gray-300 text-gray-700 w-[50vw]   grid lg:hidden relative z-50 items-center justify-between pt-3 pb-16 mt-1`}
+        } duration-1000 bg-gray-300 text-gray-700 w-[50vw]    grid lg:hidden relative z-50 items-center justify-between pt-3 pb-16 mt-1`}
       >
         <div className=" px-5 py-5 grid gap-6 ">
           {Discover.map((x, i) => {
