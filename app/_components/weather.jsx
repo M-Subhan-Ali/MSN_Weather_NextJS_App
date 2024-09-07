@@ -181,7 +181,7 @@ const Weather_ForeCast = () => {
     e.preventDefault();
     Handle_Fetch_Weather();
   };
-  console.log(weather);
+  // console.log(weather);
 
   return (
     <main
@@ -236,6 +236,7 @@ const Weather_ForeCast = () => {
                 width={20}
                 height={20}
                 alt="weather clouds image"
+                priority
               />
               <div className="relative text-sm">
                 <span>
@@ -251,7 +252,7 @@ const Weather_ForeCast = () => {
                   className="rotate-90 cursor-pointer"
                 />
                 <div
-                  className={`${activeIndex ? "block" : "none"} ${
+                  className={`${activeIndex ? "block" : "hidden"} ${
                     isDayTime ? "bg-white " : "bg-gray-700"
                   }  absolute -left-[1170%] -bottom-14 flex items-center justify-center  py-2 px-3 
     text-base w-[200px] rounded-lg`}
@@ -260,7 +261,9 @@ const Weather_ForeCast = () => {
                   <div>
                     <h1
                       onClick={() => {
-                        setWeather(null), setCity(""), setActiveIndex(false);
+                        setWeather(null),
+                          setCity(""),
+                          setActiveIndex((value) => !value);
                       }}
                       className="text-sm cursor-pointer"
                     >
@@ -291,6 +294,7 @@ const Weather_ForeCast = () => {
                 height={30}
                 alt="current home"
                 className="p-1 w-[20px] sm:w-[30px] "
+                priority
               />
             </div>
           </div>
@@ -305,7 +309,7 @@ const Weather_ForeCast = () => {
                 py-2 px-2 sm:px-4  `}
           >
             <div
-              onMouseEnter={() => {
+              onClick={() => {
                 setActiveIndexClose((value) => !value);
               }}
               className={`flex gap-1 sm:gap-3 ${
@@ -321,8 +325,8 @@ const Weather_ForeCast = () => {
             </div>
             <div
               className={`${
-                activeindexclose ? "block" : "none"
-              } absolute z-50 right-0 sm:-left-[140%] top-[100%] sm:w-auto w-[280px]  sm:-bottom-[1050%] py-5 px-5 grid sm:flex items-center justify-center
+                activeindexclose ? "grid  sm:flex  " : "hidden"
+              } absolute z-50 right-0 sm:-left-[140%] top-[100%] sm:w-auto w-[280px]  sm:-bottom-[1050%] py-5 px-5 items-center justify-center
                      bg-white rounded-xl `}
             >
               <div>
@@ -332,6 +336,7 @@ const Weather_ForeCast = () => {
                   height={222}
                   alt="gif entry mobile device "
                   className="sm:w-[222px] w-[120px] sm:h-[222px] h-[150px] mx-auto"
+                  priority
                 />
               </div>
               <div className="flex flex-col items-center">
@@ -348,6 +353,7 @@ const Weather_ForeCast = () => {
                   height={190}
                   alt="qr Code"
                   className="w-[100px] sm:w-[190px] "
+                  priority
                 />
               </div>
               <div className="absolute top-4 right-4">
@@ -392,6 +398,7 @@ const Weather_ForeCast = () => {
                     width={72}
                     height={72}
                     alt="clouds with current weather"
+                    priority
                   />
                 ) : weather &&
                   weather.current.weather[0].description.includes("rain") ? (
@@ -400,6 +407,7 @@ const Weather_ForeCast = () => {
                     width={72}
                     height={72}
                     alt="rainy weather"
+                    priority
                   />
                 ) : (
                   <Image
@@ -407,6 +415,7 @@ const Weather_ForeCast = () => {
                     width={72}
                     height={72}
                     alt="clouds with current weather"
+                    priority
                   />
                 )}
 
@@ -469,6 +478,7 @@ const Weather_ForeCast = () => {
                                 width={10}
                                 height={10}
                                 alt="fullsun_image"
+                                priority
                               />
                             </div>
                           )}
@@ -557,6 +567,7 @@ const Weather_ForeCast = () => {
                         height={40}
                         width={40}
                         alt="weather "
+                        priority
                       />
                     </div>
                     <div className="grid gap-2">
@@ -620,6 +631,7 @@ const Weather_ForeCast = () => {
                       height={40}
                       width={40}
                       alt="weather "
+                      priority
                     />
                   </div>
                   <div className="grid gap-2">
@@ -670,6 +682,7 @@ const Weather_ForeCast = () => {
                       height={40}
                       width={40}
                       alt="weather "
+                      priority
                     />
                   </div>
                   <div className="grid gap-2">
@@ -720,6 +733,7 @@ const Weather_ForeCast = () => {
                       height={40}
                       width={40}
                       alt="weather "
+                      priority
                     />
                   </div>
                   <div className="grid gap-2">
@@ -770,6 +784,7 @@ const Weather_ForeCast = () => {
                       height={40}
                       width={40}
                       alt="weather "
+                      priority
                     />
                   </div>
                   <div className="grid gap-2">

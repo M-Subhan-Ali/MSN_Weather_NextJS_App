@@ -128,7 +128,7 @@ const Navbar = () => {
                 className="cursor-pointer"
               />
               <div
-                className={`${dots ? "block" : "none"} ${
+                className={`${dots ? "block" : "hidden"} ${
                   isDayTime ? "text-black" : "text-white"
                 } absolute top-5 right-0 shadow-md shadow-gray-500
                 px-3 py-2`}
