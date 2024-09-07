@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useState } from "react";
-import { ThemeContext } from "../page";   //usecontext provider
+import { ThemeContext } from "../page"; //usecontext provider
 import axios from "axios";
 import Image from "next/image";
 import { IoIosSearch } from "react-icons/io";
@@ -27,7 +27,7 @@ const Weather_ForeCast = () => {
   const sunriseTime = weather?.current?.sunrise;
   const sunsetTime = weather?.current?.sunset;
 
-  const {isDayTime,setIsDayTime}=useContext(ThemeContext);
+  const { isDayTime, setIsDayTime } = useContext(ThemeContext);
   // const isDayTime = false
   // const isDayTime = currentTime >= sunriseTime && currentTime <= sunsetTime;
 
@@ -42,31 +42,36 @@ const Weather_ForeCast = () => {
   day3.setDate(today.getDate() + 2);
   day4.setDate(today.getDate() + 3);
   day5.setDate(today.getDate() + 4);
- 
+
   let time_of_API = null;
-  let percentageOfSunlightRemaining = null
-  if(weather && weather.current){
- time_of_API=weather.current.dt*1000;
+  let percentageOfSunlightRemaining = null;
+  if (weather && weather.current) {
+    time_of_API = weather.current.dt * 1000;
 
- const { sunrise, sunset, dt } = weather.current;
+    const { sunrise, sunset, dt } = weather.current;
 
-  // Convert to milliseconds
-  const sunriseTime = sunrise * 1000;
-  const sunsetTime = sunset * 1000;
-  const currentTime = dt * 1000;
+    // Convert to milliseconds
+    const sunriseTime = sunrise * 1000;
+    const sunsetTime = sunset * 1000;
+    const currentTime = dt * 1000;
 
-  // Calculate total daylight duration and elapsed time
-  const totalDaylightDuration = sunsetTime - sunriseTime;
-  const elapsedDaylight = currentTime - sunriseTime;
+    // Calculate total daylight duration and elapsed time
+    const totalDaylightDuration = sunsetTime - sunriseTime;
+    const elapsedDaylight = currentTime - sunriseTime;
 
-  // Calculate remaining daylight time
-  const remainingDaylight = totalDaylightDuration - elapsedDaylight;
+    // Calculate remaining daylight time
+    const remainingDaylight = totalDaylightDuration - elapsedDaylight;
 
-  // Calculate the percentage of sunlight remaining
-  percentageOfSunlightRemaining = (remainingDaylight / totalDaylightDuration) * 100;
-}
+    // Calculate the percentage of sunlight remaining
+    percentageOfSunlightRemaining =
+      (remainingDaylight / totalDaylightDuration) * 100;
+  }
 
-const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US', { timeZone: weather.timezone }) : "Loading...";
+  const formattedTime = time_of_API
+    ? new Date(time_of_API).toLocaleString("en-US", {
+        timeZone: weather.timezone,
+      })
+    : "Loading...";
 
   const information = [
     "Air quality",
@@ -187,15 +192,15 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
       }  `}
     >
       <div className="container sub-main mx-auto ">
-        <div className="h-[72px]  py-4 ">
-          <div className="flex gap-4 ">
+        <div className="sm:h-[72px] h-auto  py-4 ">
+          <div className="grid sm:flex sm:justify-start justify-center items-center gap-2 md:gap-4 xl:ps-0 sm:ps-10 ">
             <form onSubmit={Handler_Submit}>
               <div
                 className={`${
                   isDayTime
                     ? " bg-white "
                     : " text-white backdrop-blur-3xl border border-gray-500 hover:border-gray-300"
-                } flex items-center px-2 rounded-xl`}
+                } flex  items-center  px-2 rounded-xl`}
               >
                 <input
                   type="text"
@@ -204,13 +209,13 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
                   placeholder="Search For Location"
                   className={`${
                     isDayTime ? "text-gray-800" : "bg-transparent"
-                  } outline-none py-2 px-3 rounded-xl`}
+                  } text-[12px]  sm:text-[14px] outline-none py-2 px-3 rounded-xl `}
                 />
                 <button type="submit">
                   <IoIosSearch
                     className={`${
                       isDayTime
-                        ? "text-2xl text-gray-500 font-medium cursor-pointer"
+                        ? "text-[6px] sm:text-2xl text-gray-500 font-medium cursor-pointer"
                         : "text-white"
                     }`}
                   />
@@ -219,7 +224,7 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
             </form>
 
             <div
-              className={`flex items-center gap-4 py-2 px-3 rounded-2xl ${
+              className={`flex items-center justify-center sm:w-auto w-[80%]   gap-2 sm:gap-4 py-2 px-3 rounded-2xl ${
                 isDayTime
                   ? " bg-white"
                   : "text-white backdrop-blur-3xl border border-gray-500 hover:border-gray-300 "
@@ -253,51 +258,72 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
                 >
                   <MdOutlineDeleteOutline className="text-2xl cursor-pointer" />
                   <div>
-                    <h1 onClick={()=>{setWeather(null),setCity(""),setActiveIndex(false)}}
-                     className="text-sm cursor-pointer">Remove Location</h1>
+                    <h1
+                      onClick={() => {
+                        setWeather(null), setCity(""), setActiveIndex(false);
+                      }}
+                      className="text-sm cursor-pointer"
+                    >
+                      Remove Location
+                    </h1>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between ">
-          <div className={`flex items-center gap-3 ${isDayTime ? "text-black" : "text-white"}`}>
+        <div className="flex items-center justify-between xl:px-0 sm:px-10 px-5  ">
+          <div
+            className={`flex items-center gap-3 text-[10px] sm:text-xl ${
+              isDayTime ? "text-black" : "text-white"
+            }`}
+          >
             {weather && weather.timezone}
-            <IoIosArrowDown  />
+            <IoIosArrowDown />
             <div
-              className={`${isDayTime ? " bg-black rounded-full" : "bg-gray-600 "} rounded-full`}
+              className={`${
+                isDayTime ? " bg-black rounded-full" : "bg-gray-600 "
+              } rounded-full`}
             >
               <Image
                 src={SemiHome}
                 width={30}
                 height={30}
                 alt="current home"
-                className="p-1"
+                className="p-1 w-[20px] sm:w-[30px] "
               />
             </div>
           </div>
 
           <div
-            className={`${isDayTime ? "bg-white" : "bg-transparent border  border-gray-500 hover:border-gray-300"}  relative flex items-center gap-2 
+            className={`${
+              isDayTime
+                ? "bg-white"
+                : "bg-transparent border  border-gray-500 hover:border-gray-300"
+            }  relative flex items-center justify-center gap-2  
             rounded-s-full rounded-e-full
-                py-2 px-4  `}
+                py-2 px-2 sm:px-4  `}
           >
             <div
               onMouseEnter={() => {
                 setActiveIndexClose((value) => !value);
               }}
-              className={`flex gap-3 ${isDayTime ? "bg-white text-black" :"text-white  bg-transparent  "} `}
-            
+              className={`flex gap-1 sm:gap-3 ${
+                isDayTime
+                  ? "bg-white text-black"
+                  : "text-white  bg-transparent  "
+              } `}
             >
-              <CiMobile3 className="text-xl" />
-              <h1 className="text-sm font-semibold">Live Weather on Mobile</h1>
+              <CiMobile3 className="text-[20px] sm:text-xl" />
+              <h1 className="text-[10px] sm:text-sm font-semibold flex items-center">
+                Live Weather on Mobile
+              </h1>
             </div>
             <div
               className={`${
                 activeindexclose ? "block" : "none"
-              } absolute z-50 -left-[140%] -bottom-[1050%] py-5 px-5 flex items-center
-                     bg-white `}
+              } absolute z-50 right-0 sm:-left-[140%] top-[100%] sm:w-auto w-[280px]  sm:-bottom-[1050%] py-5 px-5 grid sm:flex items-center justify-center
+                     bg-white rounded-xl `}
             >
               <div>
                 <Image
@@ -305,15 +331,24 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
                   width={222}
                   height={222}
                   alt="gif entry mobile device "
+                  className="sm:w-[222px] w-[120px] sm:h-[222px] h-[150px] mx-auto"
                 />
               </div>
               <div className="flex flex-col items-center">
-                <h1 className="text-2xl font-semibold">Scan the QR code</h1>
-                <p className="text-base text-center">
+                <h1 className="text-base sm:text-2xl font-semibold">
+                  Scan the QR code
+                </h1>
+                <p className="text-sm sm:text-base text-center">
                   Enjoy real-time, hyperlocal and the most accurate forecast on
                   mobile
                 </p>
-                <Image src="/qr.png" width={190} height={190} alt="qr Code" />
+                <Image
+                  src="/qr.png"
+                  width={190}
+                  height={190}
+                  alt="qr Code"
+                  className="w-[100px] sm:w-[190px] "
+                />
               </div>
               <div className="absolute top-4 right-4">
                 <IoClose
@@ -326,32 +361,57 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-10 pt-10 ">
-          <div className={`px-5 py-3 rounded-2xl ${isDayTime ? "bg-white" : "bg-transparent border  border-gray-500 hover:border-gray-300 text-white "} `}>
-            <div className="flex justify-between py-3 ">
+        <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-10 pt-10 xl:px-0 px-10 ">
+          <div
+            className={`px-5 py-3 rounded-2xl ${
+              isDayTime
+                ? "bg-white"
+                : "bg-transparent border  border-gray-500 hover:border-gray-300 text-white "
+            } `}
+          >
+            <div className="grid sm:flex justify-between gap-3 sm:gap-0 py-3 ">
               <div>
                 <h1 className="font-bold text-sm">Current Weather</h1>
-                <p className="text-sm">{formattedTime}</p>
+                <p className=" sm:text-sm">{formattedTime}</p>
               </div>
               <div
-                className={`flex items-center gap-3 py-2 px-3 rounded-s-full rounded-e-full
-          text-blue-400 text-sm ${isDayTime ? "bg-gray-300 " : "bg-transparent border border-gray-300"} cursor-pointer`}
+                className={`flex items-center gap-1 sm:gap-3  py-1 sm:py-2 px-3 rounded-s-full rounded-e-full
+          text-blue-400 text-[8px] sm:text-sm ${
+            isDayTime ? "bg-gray-300 " : "bg-transparent border border-gray-300"
+          } cursor-pointer`}
               >
                 <FaMessage />
                 <span>Seeing Differnt weather?</span>
               </div>
             </div>
-            <div className="flex items-center gap-12">
+            <div className="grid sm:flex items-center gap-12">
               <div className="flex gap-2">
-                <Image
-                  src={isDayTime ? "/mostlyclear.svg" : "/night.svg"}
-                  width={72}
-                  height={72}
-                  alt="clouds with current weather"
-                />
+                {weather && (weather.current.temp - 273.15).toFixed(0) >= 30 ? (
+                  <Image
+                    src={isDayTime ? "/fullsun.svg" : "/night.svg"}
+                    width={72}
+                    height={72}
+                    alt="clouds with current weather"
+                  />
+                ) : weather &&
+                  weather.current.weather[0].description.includes("rain") ? (
+                  <Image
+                    src={isDayTime ? "/rain.svg" : "/nightrain.svg"} // Adjust image sources as needed
+                    width={72}
+                    height={72}
+                    alt="rainy weather"
+                  />
+                ) : (
+                  <Image
+                    src={isDayTime ? "/mostlyclear.svg" : "/night.svg"}
+                    width={72}
+                    height={72}
+                    alt="clouds with current weather"
+                  />
+                )}
+
                 <div className="relative  text-7xl">
-                  {weather &&
-                    (weather.current.temp -  273.15).toFixed(0)}
+                  {weather && (weather.current.temp - 273.15).toFixed(0)}
                   <div className="absolute -top-2 -right-3 ">
                     <p className="text-3xl">∘</p>
                   </div>
@@ -367,9 +427,13 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
                     <p>Feels Like</p>
                   </div>
                   <div className="relative">
-                    <p>88</p>
+                    <p>
+                      {weather
+                        ? (weather.current.feels_like - 273.15).toFixed(0)
+                        : "Loading"}
+                    </p>
                     <div className="absolute -top-3 left-5 ">
-                      <p className="text-lg font-medium">∘</p>
+                      <p className="text-lg font-medium">{weather && "∘"}</p>
                     </div>
                   </div>
                 </div>
@@ -383,7 +447,7 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
                 {weather && weather.current.temp.toFixed(0)}° on this day.
               </p>
             </div>
-            <div className="grid grid-cols-6">
+            <div className="grid  grid-cols-2 sm:grid-cols-6 gap-3 sm:gap-0">
               {information.map((x, index) => {
                 return (
                   <div key={index}>
@@ -424,7 +488,7 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
               })}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid sm:grid-cols-2 gap-5 sm:gap-3">
             <div>
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d64851140.25901139!2d-61.87783357081126!3d7.218073109762744!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46ed8886cfadda85%3A0x72ef99e6b3fcf079!2sEurope!5e0!3m2!1sen!2s!4v1725534144894!5m2!1sen!2s"
@@ -455,20 +519,32 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
           </div>
         </div>
         <div
-          className={`flex justify-between items-center w-[75%] text-base font-semibold
+          className={`flex justify-between items-center xl:px-0 px-10 w-full xl:w-[75%] text-[12px] sm:text-base font-semibold
         py-8 ${isDayTime ? "text-black" : "text-white"}`}
         >
           <div>
             <h1>4 Days Forecast</h1>
           </div>
-          <div className={`flex items-center gap-1 ${isDayTime ?  "text-gray-600" : "text-gray-200 border border-gray-300 py-2 px-4 rounded-e-full rounded-s-full"}`}>
+          <div
+            className={`flex items-center gap-1 ${
+              isDayTime
+                ? "text-gray-600"
+                : "text-gray-200 border border-gray-300 py-2 px-4 rounded-e-full rounded-s-full"
+            }`}
+          >
             <h1>see Monthly</h1>
             <FaArrowDown />
           </div>
         </div>
-        <div className="w-[75%]">
-          <div className="flex gap-3">
-            <div className={`w-[320px] ${isDayTime ? "bg-white" : "bg-transparent border border-gray-300 rounded-2xl text-white"}`}>
+        <div className="w-full xl:w-[75%] xl:px-0 px-10 pb-10">
+          <div className="grid sm:flex gap-3">
+            <div
+              className={`w-auto sm:w-[320px] ${
+                isDayTime
+                  ? "bg-white"
+                  : "bg-transparent border border-gray-300 rounded-2xl text-white"
+              }`}
+            >
               <div className="grid grid-cols-2 justify-between items-center py-2 px-3 rounded-2xl">
                 <div className="text-base font-semibold">
                   <div>
@@ -509,15 +585,27 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
                   </div>
                 </div>
                 <div className="font-light grid gap-2">
-                  <h1>{weather ? weather.current.weather[0].description : "Mostly sunny"}</h1>
-                  <h1>{weather ? (percentageOfSunlightRemaining).toFixed(0) + "%" : "Loading"}</h1>
+                  <h1>
+                    {weather
+                      ? weather.current.weather[0].description
+                      : "Mostly sunny"}
+                  </h1>
+                  <h1>
+                    {weather
+                      ? percentageOfSunlightRemaining.toFixed(0) + "%"
+                      : "Loading"}
+                  </h1>
                 </div>
               </div>
             </div>
-            <div className="w-full grid grid-cols-4 gap-3 ">
+            <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-3 ">
               <div
                 className={`grid justify-center items-center  
-            px-3 py-1 rounded-2xl ${isDayTime ? "bg-white" : "bg-transparent border border-gray-300 rounded-2xl text-white"}`}
+            px-3 py-1 rounded-2xl ${
+              isDayTime
+                ? "bg-white"
+                : "bg-transparent border border-gray-300 rounded-2xl text-white"
+            }`}
               >
                 <div className="text-xs">
                   <h1>
@@ -563,7 +651,11 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
               </div>
               <div
                 className={`grid justify-center items-center  
-            px-3 py-1 rounded-2xl  ${isDayTime ? "bg-white" : "bg-transparent border border-gray-300 rounded-2xl text-white"}`}
+            px-3 py-1 rounded-2xl  ${
+              isDayTime
+                ? "bg-white"
+                : "bg-transparent border border-gray-300 rounded-2xl text-white"
+            }`}
               >
                 <div className="text-xs">
                   <h1>
@@ -609,7 +701,11 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
               </div>
               <div
                 className={`grid justify-center items-center 
-            px-3 py-1 rounded-2xl ${isDayTime ? "bg-white": "bg-transparent border border-gray-300 rounded-2xl text-white"}`}
+            px-3 py-1 rounded-2xl ${
+              isDayTime
+                ? "bg-white"
+                : "bg-transparent border border-gray-300 rounded-2xl text-white"
+            }`}
               >
                 <div className="text-xs">
                   <h1>
@@ -655,7 +751,11 @@ const formattedTime = time_of_API ? new Date(time_of_API).toLocaleString('en-US'
               </div>
               <div
                 className={`grid justify-center items-center  
-            px-3 py-1 rounded-2xl ${isDayTime ? "bg-white" : "bg-transparent border border-gray-300 rounded-2xl text-white"}`}
+            px-3 py-1 rounded-2xl ${
+              isDayTime
+                ? "bg-white"
+                : "bg-transparent border border-gray-300 rounded-2xl text-white"
+            }`}
               >
                 <div className="text-xs">
                   <h1>

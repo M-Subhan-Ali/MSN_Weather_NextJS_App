@@ -18,7 +18,7 @@ const Navbar = () => {
   const [dots, setDots] = useState(false);
   const [activeIndex, setActiveIndex] = useState(2);
   const { isDayTime, setIsDayTime } = useContext(ThemeContext);
-  const [aside,setAside]=useState(false);
+  const [aside, setAside] = useState(true);
   const Discover = [
     "Discover",
     "Following",
@@ -34,11 +34,13 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white h-full lg:h-[120px] mx-auto w-full ">
-      <div className="px-2 lg:px-5 md:px-3 xl:px-10 2xl:px-20 mx-auto flex justify-between items-center pt-4 ">
+    <nav className="bg-white lg:h-[120px] h-[100px] mx-auto w-full ">
+      <div className="relative px-2 lg:px-5 md:px-3 xl:px-10 2xl:px-20 mx-auto flex justify-between items-center pt-4 ">
         <div className="flex items-center gap-1">
           <Image src={microsoft} alt="LOGO" width={22} height={22} />
-          <h1 className="text-lg text-gray-500 font-medium">Microsoft Start</h1>
+          <h1 className="text-[10px] sm:text-lg text-gray-500 font-medium">
+            Microsoft Start
+          </h1>
         </div>
 
         <div className="hidden md:flex justify-center  lg:w-[50%] xl:w-[60%] ">
@@ -74,7 +76,10 @@ const Navbar = () => {
             )}
           </div>
           <div>
-            <CiMobile3 onClick={()=>setAside((val)=>!val)} className="text-xl  md:text-3xl  cursor-pointer" />
+            <CiMobile3
+              onClick={() => setAside((val) => !val)}
+              className="text-xl  md:text-3xl  cursor-pointer"
+            />
           </div>
           <div>
             <IoNotificationsOutline className="text-xl  md:text-3xl  cursor-pointer" />
@@ -83,10 +88,16 @@ const Navbar = () => {
             <IoSettingsOutline className="text-xl  md:text-3xl  cursor-pointer" />
           </div>
           <div>
-            <button className="py-2 px-3 border text-sm  md:text-base  border-gray-400 rounded-lg">
+            <button className="py-1 px-2 border text-6  md:text-base  border-gray-400 rounded-lg">
               Sign In
             </button>
           </div>
+        </div>
+        <div
+          className="absolute lg:hidden md:top-[110%] top-[120%]  right-5"
+          onClick={() => setAside((val) => !val)}
+        >
+          <FaBars className="text-lg cursor-pointer" />
         </div>
       </div>
       <div className="container mx-auto hidden lg:flex items-center justify-between pt-3">
@@ -141,11 +152,12 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <aside className={` ${aside ?   "translate-x-0" : "translate-x-[-100%]"} duration-1000 bg-gray-300 text-gray-700 w-[50vw]  grid lg:hidden items-center justify-between pt-3`}>
-        <div className=" px-5 grid gap-6 ">
-          <div>
-            <FaBars className="text-md cursor-pointer" />
-          </div>
+      <aside
+        className={` ${
+          aside ? "translate-x-0" : "translate-x-[-100%] "
+        } duration-1000 bg-gray-300 text-gray-700 w-[50vw]  grid lg:hidden relative z-50 items-center justify-between pt-3 mt-1`}
+      >
+        <div className=" px-5 py-5 grid gap-6 ">
           {Discover.map((x, i) => {
             return (
               <div key={i}>
@@ -160,37 +172,6 @@ const Navbar = () => {
               </div>
             );
           })}
-        </div>
-        <div className="flex items-center gap-4 ">
-          <div>
-            <div className="relative">
-              <BsThreeDots
-                onClick={() => setDots((value) => !value)}
-                className="cursor-pointer"
-              />
-              <div
-                className={`${dots ? "block" : "none"} ${
-                  isDayTime ? "text-black" : "text-white"
-                } absolute top-5 right-0 shadow-md shadow-gray-500
-                px-3 py-2`}
-              >
-                <ul>
-                  <li>EarthQuakes</li>
-                  <li>Air Quality</li>
-                  <li>3D Maps</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className=" flex items-center  h-full">
-            <div
-              className="flex items-center gap-2 border border-black rounded-s-full rounded-e-full
-                py-2 px-4  "
-            >
-              <PiShootingStarThin className="text-xl" />
-              <h1 className="text-sm">Personalize</h1>
-            </div>
-          </div>
         </div>
       </aside>
     </nav>
